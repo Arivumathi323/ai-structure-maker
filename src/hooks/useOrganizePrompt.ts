@@ -1,12 +1,26 @@
 import { useState, useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const ORGANIZE_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/organize-prompt`;
 
 export function useOrganizePrompt() {
   const [isLoading, setIsLoading] = useState(false);
   const [output, setOutput] = useState("");
+  const [historyRefresh, setHistoryRefresh] = useState(0);
   const { toast } = useToast();
+
+  const saveToHistory = async (input: string, output: string) => {
+    const { error } = await supabase
+      .from("prompt_history")
+      .insert({ input, output });
+
+    if (error) {
+      console.error("Failed to save to history:", error);
+    } else {
+      setHistoryRefresh((prev) => prev + 1);
+    }
+  };
 
   const organize = useCallback(async (input: string) => {
     if (!input.trim()) return;
@@ -108,11 +122,15 @@ export function useOrganizePrompt() {
       if (cleanOutput.endsWith("```")) {
         cleanOutput = cleanOutput.slice(0, -3);
       }
-      setOutput(cleanOutput.trim());
+      const finalOutput = cleanOutput.trim();
+      setOutput(finalOutput);
+
+      // Save to history
+      await saveToHistory(input, finalOutput);
 
       toast({
         title: "Success!",
-        description: "Your prompt has been organized",
+        description: "Your prompt has been organized and saved",
       });
     } catch (error) {
       console.error("Error organizing prompt:", error);
@@ -130,5 +148,9 @@ export function useOrganizePrompt() {
     setOutput("");
   }, []);
 
-  return { organize, isLoading, output, clearOutput };
+  const setOutputManually = useCallback((value: string) => {
+    setOutput(value);
+  }, []);
+
+  return { organize, isLoading, output, clearOutput, setOutputManually, historyRefresh };
 }

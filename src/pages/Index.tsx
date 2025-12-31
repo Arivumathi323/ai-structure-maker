@@ -2,11 +2,12 @@ import { useState } from "react";
 import { Header } from "@/components/Header";
 import { InputPanel } from "@/components/InputPanel";
 import { OutputPanel } from "@/components/OutputPanel";
+import { HistoryPanel } from "@/components/HistoryPanel";
 import { useOrganizePrompt } from "@/hooks/useOrganizePrompt";
 
 const Index = () => {
   const [input, setInput] = useState("");
-  const { organize, isLoading, output, clearOutput } = useOrganizePrompt();
+  const { organize, isLoading, output, clearOutput, setOutputManually, historyRefresh } = useOrganizePrompt();
 
   const handleOrganize = () => {
     organize(input);
@@ -15,6 +16,11 @@ const Index = () => {
   const handleClear = () => {
     setInput("");
     clearOutput();
+  };
+
+  const handleHistorySelect = (historyInput: string, historyOutput: string) => {
+    setInput(historyInput);
+    setOutputManually(historyOutput);
   };
 
   return (
@@ -30,7 +36,7 @@ const Index = () => {
         <Header />
 
         <main className="mt-12">
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid lg:grid-cols-[1fr_1fr_280px] md:grid-cols-2 gap-6">
             {/* Input Panel */}
             <div className="glass-card rounded-2xl p-6 min-h-[500px]">
               <InputPanel
@@ -46,6 +52,14 @@ const Index = () => {
             <div className="glass-card rounded-2xl p-6 min-h-[500px]">
               <OutputPanel output={output} isLoading={isLoading} />
             </div>
+
+            {/* History Panel */}
+            <div className="md:col-span-2 lg:col-span-1">
+              <HistoryPanel 
+                onSelect={handleHistorySelect} 
+                refreshTrigger={historyRefresh}
+              />
+            </div>
           </div>
 
           {/* Features section */}
@@ -54,7 +68,7 @@ const Index = () => {
               { title: "Auto-Detect", desc: "Identifies JSON, prompts, or plain text automatically" },
               { title: "Fix Invalid", desc: "Repairs broken JSON and fills missing fields" },
               { title: "Restructure", desc: "Converts messy input into clean structure" },
-              { title: "Export Ready", desc: "Copy or download your organized output" },
+              { title: "Save History", desc: "Recall and reuse your previous prompts" },
             ].map((feature, i) => (
               <div
                 key={i}
