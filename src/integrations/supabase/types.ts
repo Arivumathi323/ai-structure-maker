@@ -14,7 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      prompt_history: {
+        Row: {
+          created_at: string
+          id: string
+          input: string
+          output: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input: string
+          output: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: string
+          output?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
