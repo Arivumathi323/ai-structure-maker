@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 const ORGANIZE_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/organize-prompt`;
 
@@ -9,11 +10,14 @@ export function useOrganizePrompt() {
   const [output, setOutput] = useState("");
   const [historyRefresh, setHistoryRefresh] = useState(0);
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const saveToHistory = async (input: string, output: string) => {
+    if (!user) return;
+    
     const { error } = await supabase
       .from("prompt_history")
-      .insert({ input, output });
+      .insert({ input, output, user_id: user.id });
 
     if (error) {
       console.error("Failed to save to history:", error);
@@ -125,12 +129,16 @@ export function useOrganizePrompt() {
       const finalOutput = cleanOutput.trim();
       setOutput(finalOutput);
 
-      // Save to history
-      await saveToHistory(input, finalOutput);
+      // Save to history (only if user is logged in)
+      if (user) {
+        await saveToHistory(input, finalOutput);
+      }
 
       toast({
         title: "Success!",
-        description: "Your prompt has been organized and saved",
+        description: user 
+          ? "Your prompt has been organized and saved" 
+          : "Your prompt has been organized (sign in to save history)",
       });
     } catch (error) {
       console.error("Error organizing prompt:", error);
@@ -142,7 +150,7 @@ export function useOrganizePrompt() {
     } finally {
       setIsLoading(false);
     }
-  }, [toast]);
+  }, [toast, user]);
 
   const clearOutput = useCallback(() => {
     setOutput("");

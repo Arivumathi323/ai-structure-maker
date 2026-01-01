@@ -1,9 +1,11 @@
 import { supabase } from "@/integrations/supabase/client";
-import { History, Trash2, Clock } from "lucide-react";
+import { History, Trash2, Clock, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 interface HistoryItem {
   id: string;
@@ -21,12 +23,21 @@ export function HistoryPanel({ onSelect, refreshTrigger }: HistoryPanelProps) {
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   const fetchHistory = async () => {
+    if (!user) {
+      setHistory([]);
+      setIsLoading(false);
+      return;
+    }
+    
     setIsLoading(true);
     const { data, error } = await supabase
       .from("prompt_history")
       .select("*")
+      .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .limit(20);
 
@@ -40,7 +51,7 @@ export function HistoryPanel({ onSelect, refreshTrigger }: HistoryPanelProps) {
 
   useEffect(() => {
     fetchHistory();
-  }, [refreshTrigger]);
+  }, [refreshTrigger, user]);
 
   const handleDelete = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -80,6 +91,32 @@ export function HistoryPanel({ onSelect, refreshTrigger }: HistoryPanelProps) {
     if (str.length <= len) return str;
     return str.substring(0, len) + "...";
   };
+
+  if (!user) {
+    return (
+      <div className="glass-card rounded-2xl p-4 h-full">
+        <div className="flex items-center gap-2 mb-4">
+          <History className="w-5 h-5 text-primary" />
+          <h2 className="text-lg font-semibold text-foreground">History</h2>
+        </div>
+        
+        <div className="flex flex-col items-center justify-center h-[400px] text-center">
+          <LogIn className="w-8 h-8 text-muted-foreground/30 mb-3" />
+          <p className="text-sm text-muted-foreground mb-1">Sign in to save history</p>
+          <p className="text-xs text-muted-foreground/70 mb-4">
+            Your organized prompts will be saved for later
+          </p>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => navigate("/auth")}
+          >
+            Sign In
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="glass-card rounded-2xl p-4 h-full">
