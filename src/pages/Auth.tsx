@@ -30,26 +30,26 @@ const Auth = () => {
 
   const validateForm = () => {
     const newErrors: { email?: string; password?: string } = {};
-    
+
     const emailResult = emailSchema.safeParse(email);
     if (!emailResult.success) {
       newErrors.email = emailResult.error.errors[0].message;
     }
-    
+
     const passwordResult = passwordSchema.safeParse(password);
     if (!passwordResult.success) {
       newErrors.password = passwordResult.error.errors[0].message;
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
-    
+
     setIsLoading(true);
 
     try {
@@ -58,7 +58,7 @@ const Auth = () => {
           email,
           password,
         });
-        
+
         if (error) {
           if (error.message.includes("Invalid login credentials")) {
             throw new Error("Invalid email or password. Please try again.");
@@ -72,8 +72,8 @@ const Auth = () => {
         });
       } else {
         const redirectUrl = `${window.location.origin}/`;
-        
-        const { error } = await supabase.auth.signUp({
+
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -88,13 +88,28 @@ const Auth = () => {
           throw error;
         }
 
-        toast({
-          title: "Account created!",
-          description: "You've been signed in automatically.",
-        });
+        if (data.user && !data.session) {
+          toast({
+            title: "Account created!",
+            description: "Please check your email to confirm your account before logging in.",
+          });
+          // Do not redirect immediately if verification is needed, or maybe redirect to login?
+          // For now, let's keep them here so they know to check email.
+          setIsLogin(true); // Switch to login view
+        } else {
+          toast({
+            title: "Account created!",
+            description: "You've been signed in successfully.",
+          });
+          navigate("/");
+        }
       }
-      
-      navigate("/");
+
+      // Only navigate if we are in the login flow (and succeeded to get here)
+      if (isLogin) {
+        navigate("/");
+        return;
+      }
     } catch (error) {
       toast({
         variant: "destructive",
@@ -118,7 +133,7 @@ const Auth = () => {
     <div className="min-h-screen bg-background relative overflow-hidden flex items-center justify-center">
       {/* Background grid pattern */}
       <div className="absolute inset-0 bg-grid-pattern opacity-30" />
-      
+
       {/* Ambient glow effects */}
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[120px] animate-float" />
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[120px] animate-float" style={{ animationDelay: "-3s" }} />

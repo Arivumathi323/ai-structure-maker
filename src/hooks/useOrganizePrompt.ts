@@ -14,7 +14,7 @@ export function useOrganizePrompt() {
 
   const saveToHistory = async (input: string, output: string) => {
     if (!user) return;
-    
+
     const { error } = await supabase
       .from("prompt_history")
       .insert({ input, output, user_id: user.id });
@@ -87,9 +87,11 @@ export function useOrganizePrompt() {
               fullContent += content;
               setOutput(fullContent);
             }
-          } catch {
-            textBuffer = line + "\n" + textBuffer;
-            break;
+          } catch (e) {
+            console.warn("Failed to parse SSE JSON:", e);
+            // Do not unshift the line; if it's invalid JSON but starts with data:, 
+            // and ends with \n, it's likely a corrupted chunk or just invalid.
+            // We skip it to avoid infinite loops.
           }
         }
       }
@@ -136,8 +138,8 @@ export function useOrganizePrompt() {
 
       toast({
         title: "Success!",
-        description: user 
-          ? "Your prompt has been organized and saved" 
+        description: user
+          ? "Your prompt has been organized and saved"
           : "Your prompt has been organized (sign in to save history)",
       });
     } catch (error) {

@@ -84,8 +84,10 @@ const Index = () => {
           </section>
         </main>
 
-        <footer className="mt-16 text-center text-sm text-muted-foreground pb-8">
-          <p>Powered by AI • Built with Lovable</p>
+        <footer className="mt-16 text-center pb-8 animate-fade-in">
+          <p className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-400 tracking-wide">
+            Created by AARVAN TECH
+          </p>
         </footer>
       </div>
     </div>
