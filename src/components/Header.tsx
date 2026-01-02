@@ -53,7 +53,11 @@ export function Header() {
           <div className="relative">
             <div className="absolute inset-0 bg-primary/30 rounded-xl blur-xl animate-pulse" />
             <div className="relative bg-gradient-to-br from-primary/20 to-primary/5 p-3 rounded-xl border border-primary/20">
-              <Sparkles className="w-8 h-8 text-primary" />
+              <img
+                src="/aarvan-tech-logo.png"
+                alt="AARVAN TECH"
+                className="w-8 h-8 object-contain"
+              />
             </div>
           </div>
           <h1 className="text-4xl md:text-5xl font-bold">
@@ -62,7 +66,7 @@ export function Header() {
             <span className="text-primary">AI</span>
           </h1>
         </div>
-        
+
         <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
           Paste any prompt or JSON and let AI convert it into a clean, structured format instantly
         </p>

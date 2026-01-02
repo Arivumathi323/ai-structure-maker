@@ -143,7 +143,11 @@ const Auth = () => {
           {/* Header */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-2 mb-4">
-              <Sparkles className="w-8 h-8 text-primary" />
+              <img
+                src="/aarvan-tech-logo.png"
+                alt="AARVAN TECH"
+                className="w-8 h-8 object-contain"
+              />
               <span className="text-2xl font-bold text-foreground">AI Prompt Organizer</span>
             </div>
             <h1 className="text-xl font-semibold text-foreground">
