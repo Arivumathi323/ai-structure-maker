@@ -49,18 +49,16 @@ export function Header() {
       </div>
 
       <div className="text-center">
-        <div className="flex items-center justify-center gap-3 mb-4">
-          <div className="relative">
-            <div className="absolute inset-0 bg-primary/30 rounded-xl blur-xl animate-pulse" />
-            <div className="relative bg-gradient-to-br from-primary/20 to-primary/5 p-3 rounded-xl border border-primary/20">
-              <img
-                src="/aarvan-tech-logo.png"
-                alt="AARVAN TECH"
-                className="w-16 h-16 object-contain"
-              />
-            </div>
+        <div className="flex flex-col items-center justify-center gap-6 mb-8">
+          <div className="relative w-full max-w-lg mx-auto transform hover:scale-105 transition-transform duration-500">
+            <div className="absolute inset-0 bg-primary/20 blur-3xl animate-pulse rounded-full" />
+            <img
+              src="/aarvan-tech-logo.png"
+              alt="AARVAN TECH"
+              className="w-full h-auto max-h-40 object-contain relative z-10 drop-shadow-[0_0_15px_rgba(var(--primary),0.5)]"
+            />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold">
+          <h1 className="text-4xl md:text-5xl font-bold mt-2">
             <span className="text-gradient">Prompt</span>
             <span className="text-foreground">Organizer</span>
             <span className="text-primary">AI</span>

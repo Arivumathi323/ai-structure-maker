@@ -142,12 +142,15 @@ const Auth = () => {
         <div className="glass-card rounded-2xl p-8">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <img
-                src="/aarvan-tech-logo.png"
-                alt="AARVAN TECH"
-                className="w-12 h-12 object-contain"
-              />
+            <div className="flex flex-col items-center justify-center gap-4 mb-6">
+              <div className="relative w-full max-w-[200px]">
+                <div className="absolute inset-0 bg-primary/20 blur-2xl animate-pulse rounded-full" />
+                <img
+                  src="/aarvan-tech-logo.png"
+                  alt="AARVAN TECH"
+                  className="w-full h-auto object-contain relative z-10"
+                />
+              </div>
               <span className="text-2xl font-bold text-foreground">AI Prompt Organizer</span>
             </div>
             <h1 className="text-xl font-semibold text-foreground">
