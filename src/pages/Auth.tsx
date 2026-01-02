@@ -146,7 +146,7 @@ const Auth = () => {
               <img
                 src="/aarvan-tech-logo.png"
                 alt="AARVAN TECH"
-                className="w-8 h-8 object-contain"
+                className="w-12 h-12 object-contain"
               />
               <span className="text-2xl font-bold text-foreground">AI Prompt Organizer</span>
             </div>

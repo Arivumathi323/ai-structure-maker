@@ -56,7 +56,7 @@ export function Header() {
               <img
                 src="/aarvan-tech-logo.png"
                 alt="AARVAN TECH"
-                className="w-8 h-8 object-contain"
+                className="w-16 h-16 object-contain"
               />
             </div>
           </div>
